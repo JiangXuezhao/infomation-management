@@ -192,12 +192,27 @@ const updateCurrentPageData = () => {
   currentPageData.value = filterList.value.slice(start, end);
 };
 
-const handleSortChange = (column: any) => {
+type InformationKey = keyof Information;
+const handleSortChange = (column: { prop: InformationKey; order: string }) => {
   const { prop, order } = column;
   if (order === 'ascending') {
-    filterList.value.sort((a, b) => a[prop] - b[prop]);
+    filterList.value.sort((a, b) => {
+      const valueA = a[prop] as number;
+      const valueB = b[prop] as number;
+      if (!isNaN(valueA) && !isNaN(valueB)) {
+        return valueA - valueB;
+      }
+      return 0;
+    });
   } else if (order === 'descending') {
-    filterList.value.sort((a, b) => b[prop] - a[prop]);
+    filterList.value.sort((a, b) => {
+      const valueA = a[prop] as number;
+      const valueB = b[prop] as number;
+      if (!isNaN(valueA) && !isNaN(valueB)) {
+        return valueB - valueA;
+      }
+      return 0;
+    });
   }
   totalItems.value = filterList.value.length;
   currentPage.value = 1;
